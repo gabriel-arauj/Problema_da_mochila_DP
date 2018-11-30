@@ -5,9 +5,9 @@
 using namespace std;
 
 // defino os maiores valores de tamVetor e peso como 1010
-#define MAXN 1010
-#define MAXS 1010
-#define N 1000
+#define MAXN 4
+#define MAXS 3
+#define N 3
 
 // declaro as variáveis que a função utiliza
 int tab[MAXN][MAXS];
@@ -17,8 +17,8 @@ int respostas[MAXN];
 int tamVetor = N;
 
 int knapsack(int obj, int aguenta){
-	
 	// se já calculamos esse estado da dp, retornamos o resultado salvo
+	
 	if(tab[obj][aguenta]>=0) return tab[obj][aguenta];
 	
 	// se não houver mais objetos ou espaço na mochila, retorno 0, pois não posso mais botar nada
@@ -38,14 +38,13 @@ int knapsack(int obj, int aguenta){
 		// e a função deve retornar o melhor entre colocar ou não colocar
 		if(coloca == max(coloca, nao_coloca)){
 			respostas[obj] = 1;	
-		}else
-			respostas[obj] = 0;
+		}
 		return tab[obj][aguenta]=max(coloca, nao_coloca);
 	}
 	
 	// se a função não retornou ainda, então ela não entrou no if
 	// logo não era possível colocar o objeto 
-	respostas[obj] = 0;
+
 	return tab[obj][aguenta]=nao_coloca; // então retorno o valor de não colocá-lo
 }
 
@@ -67,20 +66,36 @@ void parser(){
     	for(j=0;j<MAXS;j++){
     		tab[i][j] = -1;
     	}
+    	respostas[i] = 0;
     }
     return;
 }
 
 int main(int argc, char const *argv[]){
 	parser();
-	int resp;
-	resp = knapsack(0, 3);
+	valor[0] = 2;
+	valor[1] = 3;
+	valor[2] = 4;
+	peso[0] = 2;
+	peso[1] = 5;
+	peso[2] = 3;
+
+	int resp= 0;
+	resp = knapsack(0, 2);
 	printf("resposta: %d\n", resp);
 	for (int i = 0; i < N; ++i){
 		if(respostas[i] == 1){
-			printf("%d  %d\n", peso[i], valor[i]);
+			//printf("%d  %d\n", peso[i], valor[i]);
 		}
 	}
 	
+	for(int i=0;i<MAXN;i++){
+    	for(int j=0;j<MAXS;j++){
+    		printf("%d  ", tab[i][j]);
+    	}
+    	printf("\n");
+
+    }
+    printf("_________________________________________________\n");
 	return 0;
 }
