@@ -36,7 +36,10 @@ int knapsack(int obj, int aguenta){
 		int coloca=valor[obj]+knapsack(obj+1, aguenta-peso[obj]);
 		
 		// e a função deve retornar o melhor entre colocar ou não colocar
-		respostas[obj] = 1;
+		if(coloca == max(coloca, nao_coloca)){
+			respostas[obj] = 1;	
+		}else
+			respostas[obj] = 0;
 		return tab[obj][aguenta]=max(coloca, nao_coloca);
 	}
 	
