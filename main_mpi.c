@@ -81,11 +81,11 @@ int main(int argc , char *argv[])
 	if(rank == 0){
 		for(i = 0; i < tam; i++){
 			for(j = 0; j < tam; j++){
-				printf("%d\t",a[i][j]); 
+				printf("%d\t",c[i][j]); 
 			}
 			printf("\n");
 		}
-	//}
+	}
 
 	// Finaliza
 	if(rank == 0)
