@@ -22,7 +22,7 @@ void parser(int* valor, int* peso){
 		return;
 	}
 
-	for(i=0 ; i <= N ; i++)
+	for(i=1 ; i <= N ; i++)
 		fscanf(pont_arq, "%d, %d\n", &valor[i], &peso[i]);
 	fclose(pont_arq);
 	/*	
@@ -37,29 +37,43 @@ void parser(int* valor, int* peso){
 	return;
 }
 
-void enviar(int de, int para, int &p, int &t, int b, int i){
-	if(de == 0){
-		t[b] = 0;
+void enviar(int remetente, int dest, int *p, int t[N+1][C+1], int b, int i, int size, int rank){
+	if(remetente == 0){
+		t[0][b] = 0;
+
 		return;
 	}
-	if(para = N + 1){
+	if(dest == N + 1){
+		printf("passou aq\n");
 		return;
 	}
 	int pacote[2];
-	pacote[0] = t[b];
+	pacote[0] = t[i][b];
 	pacote[1] = -1;
 	if(p[i-1] <= b){
-		pacote[1] = t[b-p[i-1]];
+		pacote[1] = t[i][b-p[i-1]];
 	}
-	MPI_BSend(pacote, 2, MPI_INT, para%size, para, MPI_COMM_WORLD);
+	printf("enviar %d COD = %d\n", i, dest);
+	MPI_Send(pacote, 2, MPI_INT, dest%size, i+1, MPI_COMM_WORLD);
 	return;
 }
 
-void receber(int remetente, int dest, int &t, int &p, int b, int i){
-	if(remetente == 0){
-		t[b] = 0;
+void receber(int remetente, int dest, int t[N+1][C+1], int *p, int b, int i, int size, MPI_Status* status){
+	if(remetente == -1){
+		t[0][b] = 0;
+		return;
 	}
-	
+	if(dest == 1){
+		return;
+	}
+	int pacote[2];
+	printf("receber %d cod = %d\n", i, remetente);
+	MPI_Recv(pacote, 2, MPI_INT, (remetente)%size, i, MPI_COMM_WORLD, status);
+	t[i-1][b] = pacote[0];
+	if (pacote[1] == -1){
+		return;
+	}
+	t[i-1][b-p[i-1]] = pacote[1];
 }
 
 
@@ -89,11 +103,14 @@ int main(int argc , char *argv[]){
 	MPI_Bcast(p, N+1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(v, N+1, MPI_INT, 0, MPI_COMM_WORLD);
  	//printf("%d\n", p[2]);
-
+	printf("%d\n", &t[0][0]);
 	for(i=rank;i<=n;i = i+size){
-		
-		MPI_Recv(&t[i-1][0], C+1, MPI_INT, (rank-1)%size, 10, MPI_COMM_WORLD, &status);
 		for(b=0;b<=c;b++){
+			//printf("%d\n", rank);
+			enviar(i, i+1, p, t, b, i, size, rank);
+			
+			receber(i-1, i, t, p, b, i, size, &status);
+			
 			if(p[i-1]>b){
 				t[i][b] = t[i-1][b];
 			}else{
@@ -102,12 +119,6 @@ int main(int argc , char *argv[]){
 		}
 	}
 
-	if (rank == 0){
-		for (i = 1; i <= n; ++i)
-		{
-			MPI_Recv(&t[i+size][0], C+1, MPI_INT, (rank-1)%size, 10, MPI_COMM_WORLD, &status);
-		}
-	}
 	MPI_Barrier(MPI_COMM_WORLD);
 	if(rank == 0){
 		int itens[N+1];
