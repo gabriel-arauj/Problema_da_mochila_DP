@@ -1,7 +1,7 @@
 #include <stdio.h>
 
  //Compiler version gcc 6.3.0
-#define N 4
+#define N 5
 #define C 10
 
 
@@ -37,20 +37,20 @@ int main(int argc , char *argv[]){
 	int t[N+1][C+1];
 	int b,i,j;
 
-	for(i=0;i<N+1;i++){
-		for(j=0;j<C+1;j++){
-			t[i][j] = 0;
-		}
+	
+	for(j=0;j<C+1;j++){
+		t[0][j] = 0;
 	}
 
  	//se for rank 0
 
-		parser(p,v);
+		//parser(p,v);
 		p[0] =v[0]= 4;
 		p[1] =v[1]= 5;
 		p[2] =v[2]= 3;
 		p[3] =v[3]= 1;
 		p[4] =v[4]= 2;
+		p[5] =v[5]= 3;
 	
 
 	for(i=1;i<=n;i++){

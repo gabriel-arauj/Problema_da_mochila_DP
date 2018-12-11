@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include <mpi.h>
  //Compiler version gcc 6.3.0
-#define N 4
+#define N 5
 #define C 10
 
+void printT(int t[N+1][C+1]){
+	for (int i = 0; i < N+1; ++i){
+			for (int j = 0; j < C+1; ++j){
+				printf("%d ",t[i][j] );
+			}
+			printf("\n");
+		}
+}
 
 int max(int x, int y){
 	if(x>y){
@@ -38,6 +46,7 @@ void enviar(int *p, int t[N+1][C+1], int b, int i, int size){
 		pacote[1] = t[i][b-p[i]];
 	}
 	MPI_Send(pacote, 2, MPI_INT, (i+1)%size, i+1, MPI_COMM_WORLD);
+	printf("enviado: i = %d, b = %d\n",i ,b );
 	return;
 }
 
@@ -51,6 +60,7 @@ void receber(int *p, int t[N+1][C+1], int b, int i, int size, MPI_Status* status
 	}
 	int pacote[2];
 	MPI_Recv(pacote, 2, MPI_INT, (i-1)%size, i, MPI_COMM_WORLD, status);
+	printf("recebido: i = %d, b = %d\n",i ,b );
 	t[i-1][b] = pacote[0];
 	t[i-1][b-p[i-1]] = pacote[1];
 }
@@ -70,18 +80,17 @@ int main(int argc , char *argv[]){
 	int t[N+1][C+1];
 	int b,i,j;
 
-	for(i=0;i<N+1;i++){
-		for(j=0;j<C+1;j++){
-			t[i][j] = 0;
-		}
-	}
 	if(rank == 0){
-		parser(p,v);
+		//for(j=0;j<C+1;j++){
+		//	t[0][j] = 0;
+		//}
+		//parser(p,v);
 		p[0] =v[0]= 4;
 		p[1] =v[1]= 5;
 		p[2] =v[2]= 3;
 		p[3] =v[3]= 1;
 		p[4] =v[4]= 2;
+		p[5] =v[5]= 3;
 	}
 	MPI_Bcast(p, N+1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(v, N+1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -89,14 +98,15 @@ int main(int argc , char *argv[]){
 	for(i=rank;i<=n;i = i+size){
 		if (i != 0){
 			for(b=0;b<=c;b++){
-				
 				receber(p, t, b, i, size, &status);	
 				if(p[i-1]>b){
 					t[i][b] = t[i-1][b];
 				}else{
 					t[i][b] = max(t[i-1][b],t[i-1][b-p[i-1]] + v[i-1]);
 				}
+				
 				enviar(p, t, b, i, size);
+
 			}
 		}
 	}
@@ -128,12 +138,7 @@ int main(int argc , char *argv[]){
 				printf("%d ... \n",p[i-1]);
 			}
 		}
-		for (int i = 0; i < N+1; ++i){
-			for (j = 0; j < C+1; ++j){
-				printf("%d ",t[i][j] );
-			}
-			printf("\n");
-		}
+		printT(t);
 	}
 //-------------------------------------------------
 	return 0;
