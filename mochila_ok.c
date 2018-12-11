@@ -2,7 +2,7 @@
 
  //Compiler version gcc 6.3.0
 #define N 5
-#define C 10
+#define C 2
 
 
 int max(int x, int y){
