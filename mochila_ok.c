@@ -45,7 +45,13 @@ int main(int argc , char *argv[]){
 
  	//se for rank 0
 
-	parser(p,v);
+		parser(p,v);
+		p[0] =v[0]= 4;
+		p[1] =v[1]= 5;
+		p[2] =v[2]= 3;
+		p[3] =v[3]= 1;
+		p[4] =v[4]= 2;
+	
 
 	for(i=1;i<=n;i++){
 		for(b=0;b<=c;b++){
@@ -59,15 +65,15 @@ int main(int argc , char *argv[]){
 	
 
 	
-	int itens[N+1];
-	b=c;
-	for(i=n; i>0;i--){
-		if(t[i][b] != t[i-1][b]){
-			itens[i-1]=1;
-			b = b - p[i - 1];
-			printf("%d ... \n",p[i-1]);
+		int itens[N+1];
+		b=c;
+		for(i=n; i>0;i--){
+			if(t[i][b] != t[i-1][b]){
+				itens[i-1]=1;
+				b = b - p[i - 1];
+				printf("%d ... \n",p[i-1]);
+			}
 		}
-	}
 	
 	for (int i = 0; i < N+1; ++i)
 	{
