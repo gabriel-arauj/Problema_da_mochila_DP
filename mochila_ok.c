@@ -1,8 +1,8 @@
 #include <stdio.h>
 
  //Compiler version gcc 6.3.0
-#define N 5
-#define C 2
+#define N 1000
+#define C 1000
 
 
 int max(int x, int y){
@@ -20,6 +20,7 @@ void parser(int* valor, int* peso){
 		printf("Erro na abertura do arquivo!");
 		return;
 	}
+	valor[0] = peso[0] = -1;
 	for(i=1 ; i <= N ; i++)
 		fscanf(pont_arq, "%d, %d\n", &valor[i], &peso[i]);
 	fclose(pont_arq);
@@ -44,21 +45,21 @@ int main(int argc , char *argv[]){
 
  	//se for rank 0
 
-		//parser(p,v);
-		p[0] =v[0]= 4;
-		p[1] =v[1]= 5;
-		p[2] =v[2]= 3;
-		p[3] =v[3]= 1;
-		p[4] =v[4]= 2;
-		p[5] =v[5]= 3;
+		parser(p,v);
+		//p[0] =v[0]= -1;
+		//p[1] =v[1]= 5;
+		//p[2] =v[2]= 3;
+		//p[3] =v[3]= 1;
+		//p[4] =v[4]= 2;
+		//p[5] =v[5]= 3;
 	
 
 	for(i=1;i<=n;i++){
 		for(b=0;b<=c;b++){
-			if(p[i-1]>b){
+			if(p[i]>b){
 				t[i][b] = t[i-1][b];
 			}else{
-				t[i][b] = max(t[i-1][b],t[i-1][b-p[i-1]] + v[i-1]);
+				t[i][b] = max(t[i-1][b],t[i-1][b-p[i]] + v[i]);
 			}	
 		}
 	}
@@ -79,12 +80,12 @@ int main(int argc , char *argv[]){
 	{
 		for (j = 0; j < C+1; ++j)
 		{
-			printf("%d ",t[i][j] );
+			//printf("%d ",t[i][j] );
 		}
-		printf("\n");
+		//printf("\n");
 	}
  	//printf("%d rank: %d \n",t[n][c], rank);	
-
+printf("%d",t[n][c]);
 	return 0;
 }
 
